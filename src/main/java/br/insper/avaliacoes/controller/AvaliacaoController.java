@@ -45,6 +45,22 @@ public class AvaliacaoController {
         return service.criar(email, request);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluirAvaliacao(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable Long id) {
+        List<String> roles = jwt.getClaimAsStringList("https://social-insper.com/roles");
+
+        if (roles == null || !roles.contains("ADMIN")) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Apenas ADMIN pode excluir avaliações"
+            );
+        }
+        service.excluir(id);
+    }
+
     @GetMapping
     public List<Avaliacao> listarAvaliacoes() {
         return service.listar();

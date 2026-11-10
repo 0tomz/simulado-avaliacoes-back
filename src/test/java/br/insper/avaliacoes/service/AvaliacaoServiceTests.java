@@ -2,6 +2,7 @@ package br.insper.avaliacoes.service;
 
 import br.insper.avaliacoes.dto.AvaliacaoRequest;
 import br.insper.avaliacoes.entity.Avaliacao;
+import br.insper.avaliacoes.entity.StatusAvaliacao;
 import br.insper.avaliacoes.exception.ValidacaoAvaliacaoException;
 import br.insper.avaliacoes.repository.AvaliacaoRepository;
 import org.junit.jupiter.api.Test;
@@ -9,12 +10,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +32,7 @@ public class AvaliacaoServiceTests {
 
     @Test
     public void testCriarComSucesso() {
-        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", 8);
+        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", 8, null);
 
         when(avaliacaoRepository.save(any(Avaliacao.class))).thenAnswer(i -> i.getArgument(0));
 
@@ -39,6 +43,7 @@ public class AvaliacaoServiceTests {
         assertEquals("Muito bom", resultado.getComentarios());
         assertEquals(8, resultado.getNota());
         assertNotNull(resultado.getDataAvaliacao());
+        assertEquals(StatusAvaliacao.ATIVA, resultado.getStatus());
         assertFalse(resultado.getDataAvaliacao().isAfter(LocalDateTime.now()));
         verify(avaliacaoRepository).save(any(Avaliacao.class));
     }
@@ -47,13 +52,13 @@ public class AvaliacaoServiceTests {
     public void testCriarComNotasNosLimites() {
         when(avaliacaoRepository.save(any(Avaliacao.class))).thenAnswer(i -> i.getArgument(0));
 
-        assertEquals(0, avaliacaoService.criar("a@insper.edu.br", new AvaliacaoRequest("b@insper.edu.br", "ok", 0)).getNota());
-        assertEquals(10, avaliacaoService.criar("a@insper.edu.br", new AvaliacaoRequest("b@insper.edu.br", "ok", 10)).getNota());
+        assertEquals(0, avaliacaoService.criar("a@insper.edu.br", new AvaliacaoRequest("b@insper.edu.br", "ok", 0, null)).getNota());
+        assertEquals(10, avaliacaoService.criar("a@insper.edu.br", new AvaliacaoRequest("b@insper.edu.br", "ok", 10, null)).getNota());
     }
 
     @Test
     public void testCriarComNotaNegativaLancaExcecao() {
-        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", -1);
+        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", -1, null);
 
         assertThrows(ValidacaoAvaliacaoException.class, () -> avaliacaoService.criar("avaliador@insper.edu.br", req));
         verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
@@ -61,7 +66,7 @@ public class AvaliacaoServiceTests {
 
     @Test
     public void testCriarComNotaMaiorQueDezLancaExcecao() {
-        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", 11);
+        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", 11, null);
 
         assertThrows(ValidacaoAvaliacaoException.class, () -> avaliacaoService.criar("avaliador@insper.edu.br", req));
         verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
@@ -69,7 +74,7 @@ public class AvaliacaoServiceTests {
 
     @Test
     public void testCriarComNotaNulaLancaExcecao() {
-        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", null);
+        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", null, null);
 
         assertThrows(ValidacaoAvaliacaoException.class, () -> avaliacaoService.criar("avaliador@insper.edu.br", req));
         verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
@@ -77,7 +82,7 @@ public class AvaliacaoServiceTests {
 
     @Test
     public void testCriarComEmailAvaliadoVazioLancaExcecao() {
-        AvaliacaoRequest req = new AvaliacaoRequest("", "Muito bom", 5);
+        AvaliacaoRequest req = new AvaliacaoRequest("", "Muito bom", 5, null);
 
         assertThrows(ValidacaoAvaliacaoException.class, () -> avaliacaoService.criar("avaliador@insper.edu.br", req));
         verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
@@ -85,7 +90,7 @@ public class AvaliacaoServiceTests {
 
     @Test
     public void testCriarComEmailAvaliadoNuloLancaExcecao() {
-        AvaliacaoRequest req = new AvaliacaoRequest(null, "Muito bom", 5);
+        AvaliacaoRequest req = new AvaliacaoRequest(null, "Muito bom", 5, null);
 
         assertThrows(ValidacaoAvaliacaoException.class, () -> avaliacaoService.criar("avaliador@insper.edu.br", req));
         verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
@@ -93,7 +98,7 @@ public class AvaliacaoServiceTests {
 
     @Test
     public void testCriarComComentariosVaziosLancaExcecao() {
-        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "", 5);
+        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "", 5, null);
 
         assertThrows(ValidacaoAvaliacaoException.class, () -> avaliacaoService.criar("avaliador@insper.edu.br", req));
         verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
@@ -101,7 +106,7 @@ public class AvaliacaoServiceTests {
 
     @Test
     public void testCriarComComentariosNulosLancaExcecao() {
-        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", null, 5);
+        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", null, 5, null);
 
         assertThrows(ValidacaoAvaliacaoException.class, () -> avaliacaoService.criar("avaliador@insper.edu.br", req));
         verify(avaliacaoRepository, never()).save(any(Avaliacao.class));
@@ -116,5 +121,35 @@ public class AvaliacaoServiceTests {
 
         assertEquals(1, resultado.size());
         verify(avaliacaoRepository).findAllByOrderByDataAvaliacaoDesc();
+    }
+
+    @Test
+    public void testCriarComStatusInformadoMantemStatus() {
+        AvaliacaoRequest req = new AvaliacaoRequest("avaliado@insper.edu.br", "Muito bom", 8, StatusAvaliacao.ARQUIVADA);
+
+        when(avaliacaoRepository.save(any(Avaliacao.class))).thenAnswer(i -> i.getArgument(0));
+
+        Avaliacao resultado = avaliacaoService.criar("avaliador@insper.edu.br", req);
+
+        assertEquals(StatusAvaliacao.ARQUIVADA, resultado.getStatus());
+    }
+
+    @Test
+    public void testExcluirComIdExistente() {
+        when(avaliacaoRepository.existsById(1L)).thenReturn(true);
+
+        avaliacaoService.excluir(1L);
+
+        verify(avaliacaoRepository).deleteById(1L);
+    }
+
+    @Test
+    public void testExcluirComIdInexistenteLancaExcecao() {
+        when(avaliacaoRepository.existsById(99L)).thenReturn(false);
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> avaliacaoService.excluir(99L));
+
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+        verify(avaliacaoRepository, never()).deleteById(anyLong());
     }
 }

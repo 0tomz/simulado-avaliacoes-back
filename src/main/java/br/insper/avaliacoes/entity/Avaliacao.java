@@ -23,6 +23,10 @@ public class Avaliacao {
 
     private LocalDateTime dataAvaliacao;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusAvaliacao status;
+
     public Long getId() {
         return id;
     }
@@ -69,5 +73,13 @@ public class Avaliacao {
 
     public void setDataAvaliacao(LocalDateTime dataAvaliacao) {
         this.dataAvaliacao = dataAvaliacao;
+    }
+
+    public StatusAvaliacao getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusAvaliacao status) {
+        this.status = status;
     }
 }

@@ -2,9 +2,12 @@ package br.insper.avaliacoes.service;
 
 import br.insper.avaliacoes.dto.AvaliacaoRequest;
 import br.insper.avaliacoes.entity.Avaliacao;
+import br.insper.avaliacoes.entity.StatusAvaliacao;
 import br.insper.avaliacoes.exception.ValidacaoAvaliacaoException;
 import br.insper.avaliacoes.repository.AvaliacaoRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,7 +38,15 @@ public class AvaliacaoService {
         avaliacao.setComentarios(req.comentarios());
         avaliacao.setNota(req.nota());
         avaliacao.setDataAvaliacao(LocalDateTime.now());
+        avaliacao.setStatus(req.status() == null ? StatusAvaliacao.ATIVA : req.status());
         return repository.save(avaliacao);
+    }
+
+    public void excluir(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Avaliação não encontrada");
+        }
+        repository.deleteById(id);
     }
 
     public List<Avaliacao> listar() {
