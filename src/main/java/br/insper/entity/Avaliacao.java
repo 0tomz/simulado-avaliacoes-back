@@ -37,7 +37,7 @@ public class Avaliacao {
     public void setDescricao(String descricao) { this.descricao = descricao; }
 
     public String getPrioridade() { return prioridade; }
-    public LocalDateTime setPrioridade(String prioridade) { this.prioridade = prioridade;}
+    public void setPrioridade(String prioridade) { this.prioridade = prioridade; }
 
     public String getEmailCriador() { return emailCriador; }
     public void setEmailCriador(String emailCriador) { this.emailCriador = emailCriador; }
