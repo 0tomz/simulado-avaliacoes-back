@@ -1,4 +1,4 @@
-package br.insper.avaliacoes;
+package br.insper;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

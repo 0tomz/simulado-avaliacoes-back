@@ -1,4 +1,4 @@
-package br.insper.avaliacoes.exception;
+package br.insper.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package br.insper.avaliacoes.entity;
+package br.insper.entity;
 
 public enum StatusAvaliacao {
     ATIVA,

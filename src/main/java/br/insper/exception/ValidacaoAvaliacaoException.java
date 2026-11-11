@@ -1,4 +1,4 @@
-package br.insper.avaliacoes.exception;
+package br.insper.exception;
 
 public class ValidacaoAvaliacaoException extends RuntimeException {
 
