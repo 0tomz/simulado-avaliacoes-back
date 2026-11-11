@@ -45,9 +45,20 @@ public class AvaliacaoController {
 
 
     private void validarAdmin(Jwt jwt) {
+        // Busca a lista de claims diretamente do corpo bruto do Token JWT do Auth0
         List<String> roles = jwt.getClaimAsStringList("https://social-insper.com");
+
+        // Se não encontrar com o namespace, tenta ler do claim padrão do Auth0 por segurança
+        if (roles == null) {
+            roles = jwt.getClaimAsStringList("roles");
+        }
+
+        // Se mesmo assim for nulo ou não contiver a palavra ADMIN, barra com 403
         if (roles == null || !roles.contains("ADMIN")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Apenas ADMIN pode executar esta ação");
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Apenas ADMIN pode executar esta ação"
+            );
         }
     }
 }
