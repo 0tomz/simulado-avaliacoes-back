@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.insper</groupId>
-	<artifactId>avaliacoes</artifactId>
+	<artifactId>artigos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>avaliacoes</name>
-	<description>avaliacoes</description>
+	<name>artigos</name>
+	<description>artigos</description>
 	<url/>
 	<licenses>
 		<license/>

@@ -5,81 +5,40 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "avaliacoes")
-public class Avaliacao {
+@Table(name = "artigos")
+public class Artigo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String emailAvaliador;
-
-    private String emailAvaliado;
-
-    @Column(length = 1000)
-    private String comentarios;
-
-    private Integer nota;
-
-    private LocalDateTime dataAvaliacao;
+    private String titulo;
+    private String descricao;
+    private String prioridade;
+    private String emailCriador;
+    private LocalDateTime dataCriacao;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusAvaliacao status;
+    private StatusArtigo status;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public String getEmailAvaliador() {
-        return emailAvaliador;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public void setEmailAvaliador(String emailAvaliador) {
-        this.emailAvaliador = emailAvaliador;
-    }
+    public String getPrioridade() { return prioridade; }
+    public void setPrioridade(String prioridade) { this.prioridade = prioridade;
 
-    public String getEmailAvaliado() {
-        return emailAvaliado;
-    }
+    public String getEmailCriador() { return emailCriador; }
+    public void setEmailCriador(String emailCriador) { this.emailCriador = emailCriador; }
 
-    public void setEmailAvaliado(String emailAvaliado) {
-        this.emailAvaliado = emailAvaliado;
-    }
+    public LocalDateTime getDataCriacao() { return dataCriacao; }
+    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
 
-    public String getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(String comentarios) {
-        this.comentarios = comentarios;
-    }
-
-    public Integer getNota() {
-        return nota;
-    }
-
-    public void setNota(Integer nota) {
-        this.nota = nota;
-    }
-
-    public LocalDateTime getDataAvaliacao() {
-        return dataAvaliacao;
-    }
-
-    public void setDataAvaliacao(LocalDateTime dataAvaliacao) {
-        this.dataAvaliacao = dataAvaliacao;
-    }
-
-    public StatusAvaliacao getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusAvaliacao status) {
-        this.status = status;
     }
 }

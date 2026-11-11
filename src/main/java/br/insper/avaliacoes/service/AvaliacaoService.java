@@ -1,5 +1,6 @@
 package br.insper.avaliacoes.service;
 
+import br.insper.avaliacoes.dto.ArtigoRequest;
 import br.insper.avaliacoes.dto.AvaliacaoRequest;
 import br.insper.avaliacoes.entity.Avaliacao;
 import br.insper.avaliacoes.entity.StatusAvaliacao;
@@ -21,8 +22,8 @@ public class AvaliacaoService {
         this.repository = repository;
     }
 
-    public Avaliacao criar(String emailAvaliador, AvaliacaoRequest req) {
-        if (req.emailAvaliado() == null || req.emailAvaliado().isBlank()) {
+    public Avaliacao criar(String emailAvaliador, ArtigoRequest req) {
+        if (req.Avaliado() == null || req.emailAvaliado().isBlank()) {
             throw new ValidacaoAvaliacaoException("O email do avaliado é obrigatório");
         }
         if (req.comentarios() == null || req.comentarios().isBlank()) {

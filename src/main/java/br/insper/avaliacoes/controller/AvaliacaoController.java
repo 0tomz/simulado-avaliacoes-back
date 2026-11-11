@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/avaliacoes")
+@RequestMapping("/artigos")
 @CrossOrigin(origins = "*")
 public class AvaliacaoController {
 
